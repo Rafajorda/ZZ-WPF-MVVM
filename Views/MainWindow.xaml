@@ -78,6 +78,12 @@
         </Style>
 
         <!-- ... estilos ... -->
+        
+        <!-- DataTemplate para la pantalla de inicio -->
+        <DataTemplate DataType="{x:Type vm:InicioViewModel}">
+            <local:UCInicio />
+        </DataTemplate>
+        
         <DataTemplate DataType="{x:Type vm:ReservasViewModel}">
             <local:UCReservas /> 
         </DataTemplate>
@@ -100,7 +106,8 @@
 
             <!-- Header -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,12,0" Cursor="Hand">
-                <Ellipse Width="18" Height="18" Fill="#FFB0B0B0" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <svg:SvgViewbox Width="24" Height="24" Margin="0,0,8,0" Source="/assets/zenithzonesinnombre.svg" Stretch="Uniform" VerticalAlignment="Center"/>
                 <TextBlock Text="ZenithZone" Foreground="#FA6400" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
             </StackPanel>
 
@@ -113,29 +120,29 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <RadioButton x:Name="RbtnReservas"   Command="{Binding ShowReservasCommand}" Grid.Column="0" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
+                <RadioButton x:Name="RbtnReservas" Command="{Binding ShowReservasCommand}" Grid.Column="0" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="18" Height="18" Fill="#FFB0B0B0" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <svg:SvgViewbox Width="18" Height="18" Margin="0,0,8,0" Source="/assets/ticket-svgrepo-com.svg" Stretch="Uniform" VerticalAlignment="Center"/>
                         <TextBlock Text="Reservas" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
-                <RadioButton x:Name="RbtnActividades"  Command="{Binding ShowActividadesCommand}" Grid.Column="1" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
+                <RadioButton x:Name="RbtnActividades" Command="{Binding ShowActividadesCommand}" Grid.Column="1" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="18" Height="18" Fill="#FFB0B0B0" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Actividades" VerticalAlignment="Center" Cursor="Hand"/>
+                        <svg:SvgViewbox Width="18" Height="18" Margin="0,0,8,0" Source="/assets/sports-svgrepo-com.svg" Stretch="Uniform" VerticalAlignment="Center"/>
+                        <TextBlock Text="Actividades" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
 
-                <RadioButton x:Name="RbtnSocios"  Command="{Binding ShowSociosCommand}" Grid.Column="2" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
+                <RadioButton x:Name="RbtnSocios" Command="{Binding ShowSociosCommand}" Grid.Column="2" GroupName="Pagina" Style="{StaticResource MenuRadioButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,6,0" Height="41" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="18" Height="18" Fill="#FFB0B0B0" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <svg:SvgViewbox Width="18" Height="18" Margin="0,0,8,0" Source="/assets/user.svg" Stretch="Uniform" VerticalAlignment="Center"/>
                         <TextBlock Text="Socios" VerticalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
 
-                <Button x:Name="BtnSalir"   Command="{Binding SalirCommand}"  Grid.Column="3" Style="{StaticResource MenuButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,12,0" Height="41" VerticalAlignment="Center">
+                <Button x:Name="BtnSalir" Command="{Binding SalirCommand}" Grid.Column="3" Style="{StaticResource MenuButtonStyle}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="6,0,12,0" Height="41" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="18" Height="18" Fill="#FFB0B0B0" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <svg:SvgViewbox Width="18" Height="18" Margin="0,0,8,0" Source="/assets/exit.svg" Stretch="Uniform" VerticalAlignment="Center"/>
                         <TextBlock Text="Salir" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>

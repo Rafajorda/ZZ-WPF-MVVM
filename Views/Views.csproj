@@ -26,6 +26,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="assets\zenithzonesinnombre.svg" />
+    <Resource Include="assets\zenithzone.png" />
+    <Resource Include="assets\ticket-svgrepo-com.svg" />
+    <Resource Include="assets\sports-svgrepo-com.svg" />
+    <Resource Include="assets\user.svg" />
+    <Resource Include="assets\exit.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="UCActividades.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

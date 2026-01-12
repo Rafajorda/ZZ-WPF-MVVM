@@ -69,8 +69,8 @@ namespace ViewModel
             SalirCommand = new RelayCommand(() =>
                 Application.Current.Shutdown());
 
-            // Establecer la vista inicial de Reservas
-            CurrentViewModel = new ReservasViewModel();
+            // Establecer la vista inicial con la pantalla de bienvenida
+            CurrentViewModel = new InicioViewModel();
         }
     }
 }
