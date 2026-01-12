@@ -14,16 +14,23 @@ using ViewModel;
 namespace Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Ventana principal de la aplicación ZenithZone
+    /// Implementa el patrón MVVM estableciendo el MainViewModel como DataContext
+    /// Gestiona la navegación entre las diferentes secciones de la aplicación
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Constructor de la ventana principal
+        /// Inicializa los componentes y establece el DataContext con el MainViewModel
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
 
+            // Establecer el ViewModel principal como contexto de datos
+            // Esto permite el binding entre la vista y el ViewModel
             DataContext = new MainViewModel();
         }
-
     }
 }

@@ -17,14 +17,20 @@ using ViewModel;
 namespace Views
 {
     /// <summary>
-    /// Lógica de interacción para UCSocios.xaml
+    /// UserControl para la gestión de Socios
+    /// Proporciona la interfaz de usuario para crear, editar, visualizar y eliminar socios
+    /// Incluye gestión del estado activo/inactivo de los socios
+    /// El DataContext se establece automáticamente desde el MainViewModel cuando se navega a esta vista
     /// </summary>
     public partial class UCSocios : UserControl
     {
+        /// <summary>
+        /// Constructor del UserControl de Socios
+        /// Inicializa todos los componentes visuales definidos en el XAML
+        /// </summary>
         public UCSocios()
         {
             InitializeComponent();
         }
-
     }
 }

@@ -5,10 +5,12 @@ using System.Windows;
 namespace Zenithzone
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Clase principal de la aplicación ZenithZone
+    /// Punto de entrada y configuración global de la aplicación WPF
+    /// Maneja eventos del ciclo de vida de la aplicación y recursos globales
     /// </summary>
     public partial class App : Application
     {
+        // La configuración de inicio y recursos se define en App.xaml
     }
-
 }

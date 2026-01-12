@@ -9,11 +9,21 @@ using Models;
 
 namespace ViewModel
 {
+    /// <summary>
+    /// ViewModel para la gestión de Actividades
+    /// Maneja la lógica de negocio y la interacción entre la vista de actividades y el repositorio
+    /// Implementa operaciones CRUD completas
+    /// </summary>
     public class ActividadesViewModel : BaseViewModel
     {
         private readonly ActividadRepository _repository;
 
         private ObservableCollection<Actividad> _actividades;
+        
+        /// <summary>
+        /// Colección observable de todas las actividades
+        /// Se actualiza automáticamente en la vista cuando cambia
+        /// </summary>
         public ObservableCollection<Actividad> Actividades
         {
             get => _actividades;
@@ -25,6 +35,11 @@ namespace ViewModel
         }
 
         private Actividad _selectedActividad;
+        
+        /// <summary>
+        /// Actividad actualmente seleccionada en el DataGrid
+        /// Controla el estado del formulario y los comandos disponibles
+        /// </summary>
         public Actividad SelectedActividad
         {
             get => _selectedActividad;
@@ -35,34 +50,52 @@ namespace ViewModel
                 OnPropertyChanged(nameof(IsEditingExistingActividad));
                 OnPropertyChanged(nameof(IsFormEnabled));
                 
+                // Forzar reevaluación de los comandos
                 System.Windows.Input.CommandManager.InvalidateRequerySuggested();
             }
         }
 
+        /// <summary>
+        /// Indica si se está editando una actividad existente (Id != 0)
+        /// </summary>
         public bool IsEditingExistingActividad => SelectedActividad != null && SelectedActividad.Id != 0;
         
+        /// <summary>
+        /// Indica si el formulario debe estar habilitado
+        /// </summary>
         public bool IsFormEnabled => SelectedActividad != null;
 
+        // Comandos para las operaciones CRUD
         public ICommand AgregarCommand { get; }
         public ICommand GuardarCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand EliminarCommand { get; }
         public ICommand CancelarCommand { get; }
 
+        /// <summary>
+        /// Constructor del ActividadesViewModel
+        /// Inicializa el repositorio, los comandos y carga los datos iniciales
+        /// </summary>
         public ActividadesViewModel()
         {
             _repository = new ActividadRepository();
             Actividades = new ObservableCollection<Actividad>();
 
+            // Inicializar comandos con sus respectivas acciones y condiciones
             AgregarCommand = new RelayCommand(Agregar);
             GuardarCommand = new RelayCommand(Guardar, () => SelectedActividad != null);
             EditarCommand = new RelayCommand(Editar, () => SelectedActividad != null);
             EliminarCommand = new RelayCommand(Eliminar, () => SelectedActividad != null);
             CancelarCommand = new RelayCommand(Cancelar);
 
+            // Cargar datos iniciales
             CargarActividades();
         }
 
+        /// <summary>
+        /// Carga todas las actividades desde la base de datos
+        /// Limpia y recarga la colección observable
+        /// </summary>
         private void CargarActividades()
         {
             Actividades.Clear();
@@ -73,6 +106,9 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Crea una nueva actividad vacía y la prepara para edición
+        /// </summary>
         private void Agregar()
         {
             var nuevaActividad = new Actividad
@@ -84,16 +120,22 @@ namespace ViewModel
             SelectedActividad = nuevaActividad;
         }
 
+        /// <summary>
+        /// Guarda la actividad actual (nueva o modificada) en la base de datos
+        /// Realiza validaciones antes de guardar
+        /// </summary>
         private void Guardar()
         {
             if (SelectedActividad == null) return;
 
+            // Validación: nombre obligatorio
             if (string.IsNullOrWhiteSpace(SelectedActividad.Nombre))
             {
                 System.Windows.MessageBox.Show("El nombre es obligatorio.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 return;
             }
 
+            // Validación: aforo mayor a 0
             if (SelectedActividad.AforoMaximo <= 0)
             {
                 System.Windows.MessageBox.Show("El aforo máximo debe ser mayor a 0.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
@@ -102,6 +144,7 @@ namespace ViewModel
 
             try
             {
+                // Determinar si es inserción o actualización según el ID
                 if (SelectedActividad.Id == 0)
                 {
                     _repository.Add(SelectedActividad);
@@ -111,6 +154,7 @@ namespace ViewModel
                     _repository.Update(SelectedActividad);
                 }
                 
+                // Recargar y limpiar selección
                 CargarActividades();
                 SelectedActividad = null;
             }
@@ -120,10 +164,18 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Prepara la actividad seleccionada para edición
+        /// En este caso no realiza ninguna acción adicional ya que la edición es directa en el formulario
+        /// </summary>
         private void Editar()
         {
+            // La edición se realiza directamente en el formulario vinculado
         }
 
+        /// <summary>
+        /// Elimina la actividad seleccionada de la base de datos
+        /// </summary>
         private void Eliminar()
         {
             if (SelectedActividad == null) return;
@@ -133,6 +185,10 @@ namespace ViewModel
             SelectedActividad = null;
         }
 
+        /// <summary>
+        /// Cancela la operación actual y recarga los datos originales
+        /// Descarta cualquier cambio no guardado
+        /// </summary>
         private void Cancelar()
         {
             SelectedActividad = null;

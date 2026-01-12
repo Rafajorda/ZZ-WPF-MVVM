@@ -9,11 +9,22 @@ using Models;
 
 namespace ViewModel
 {
+    /// <summary>
+    /// ViewModel para la gestión de Reservas
+    /// Maneja la lógica de negocio compleja incluyendo validaciones de reglas de negocio
+    /// Gestiona las relaciones entre Reservas, Socios y Actividades
+    /// Implementa operaciones CRUD completas con validaciones
+    /// </summary>
     public class ReservasViewModel : BaseViewModel
     {
         private readonly ReservaRepository _repository;
 
         private ObservableCollection<Reserva> _reservas;
+        
+        /// <summary>
+        /// Colección observable de todas las reservas con sus relaciones cargadas
+        /// Se actualiza automáticamente en la vista cuando cambia
+        /// </summary>
         public ObservableCollection<Reserva> Reservas
         {
             get => _reservas;
@@ -25,6 +36,11 @@ namespace ViewModel
         }
 
         private Reserva _selectedReserva;
+        
+        /// <summary>
+        /// Reserva actualmente seleccionada en el DataGrid
+        /// Controla el estado del formulario y los comandos disponibles
+        /// </summary>
         public Reserva SelectedReserva
         {
             get => _selectedReserva;
@@ -35,11 +51,17 @@ namespace ViewModel
                 OnPropertyChanged(nameof(IsEditingExistingReserva));
                 OnPropertyChanged(nameof(IsFormEnabled));
                 
+                // Forzar reevaluación de los comandos
                 System.Windows.Input.CommandManager.InvalidateRequerySuggested();
             }
         }
 
         private ObservableCollection<Socio> _socios;
+        
+        /// <summary>
+        /// Colección de socios activos para el ComboBox
+        /// Solo incluye socios con estado Activo = true
+        /// </summary>
         public ObservableCollection<Socio> Socios
         {
             get => _socios;
@@ -51,6 +73,10 @@ namespace ViewModel
         }
 
         private ObservableCollection<Actividad> _actividades;
+        
+        /// <summary>
+        /// Colección de actividades disponibles para el ComboBox
+        /// </summary>
         public ObservableCollection<Actividad> Actividades
         {
             get => _actividades;
@@ -61,16 +87,27 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Indica si se está editando una reserva existente (Id != 0)
+        /// </summary>
         public bool IsEditingExistingReserva => SelectedReserva != null && SelectedReserva.Id != 0;
         
+        /// <summary>
+        /// Indica si el formulario debe estar habilitado
+        /// </summary>
         public bool IsFormEnabled => SelectedReserva != null;
 
+        // Comandos para las operaciones CRUD
         public ICommand AgregarCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand GuardarCommand { get; }
         public ICommand EliminarCommand { get; }
         public ICommand CancelarCommand { get; }
 
+        /// <summary>
+        /// Constructor del ReservasViewModel
+        /// Inicializa el repositorio, los comandos y carga todos los datos necesarios
+        /// </summary>
         public ReservasViewModel()
         {
             _repository = new ReservaRepository();
@@ -78,15 +115,20 @@ namespace ViewModel
             Socios = new ObservableCollection<Socio>();
             Actividades = new ObservableCollection<Actividad>();
 
+            // Inicializar comandos con sus respectivas acciones y condiciones
             AgregarCommand = new RelayCommand(Agregar);
             GuardarCommand = new RelayCommand(Guardar, () => SelectedReserva != null);
             EditarCommand = new RelayCommand(Editar, () => SelectedReserva != null);
             EliminarCommand = new RelayCommand(Eliminar, () => SelectedReserva != null);
             CancelarCommand = new RelayCommand(Cancelar);
 
+            // Cargar todos los datos iniciales
             CargarDatos();
         }
 
+        /// <summary>
+        /// Carga todos los datos necesarios: reservas, socios activos y actividades
+        /// </summary>
         private void CargarDatos()
         {
             CargarReservas();
@@ -94,6 +136,9 @@ namespace ViewModel
             CargarActividades();
         }
 
+        /// <summary>
+        /// Carga todas las reservas desde la base de datos con sus relaciones
+        /// </summary>
         private void CargarReservas()
         {
             Reservas.Clear();
@@ -104,6 +149,9 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Carga solo los socios activos para el ComboBox de selección
+        /// </summary>
         private void CargarSocios()
         {
             Socios.Clear();
@@ -114,6 +162,9 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Carga todas las actividades disponibles para el ComboBox de selección
+        /// </summary>
         private void CargarActividades()
         {
             Actividades.Clear();
@@ -124,6 +175,10 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Crea una nueva reserva vacía y la prepara para edición
+        /// Establece la fecha actual como fecha predeterminada
+        /// </summary>
         private void Agregar()
         {
             var nuevaReserva = new Reserva
@@ -136,22 +191,32 @@ namespace ViewModel
             SelectedReserva = nuevaReserva;
         }
 
+        /// <summary>
+        /// Guarda la reserva actual (nueva o modificada) en la base de datos
+        /// Realiza múltiples validaciones:
+        /// - Validación de campos obligatorios (socio y actividad)
+        /// - Validación de regla de negocio: un socio solo puede tener una reserva por día
+        /// </summary>
         private void Guardar()
         {
             if (SelectedReserva == null) return;
 
+            // Validación: socio obligatorio
             if (SelectedReserva.SocioId == 0)
             {
                 System.Windows.MessageBox.Show("Debe seleccionar un socio.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 return;
             }
 
+            // Validación: actividad obligatoria
             if (SelectedReserva.ActividadId == 0)
             {
                 System.Windows.MessageBox.Show("Debe seleccionar una actividad.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 return;
             }
 
+            // Validación de regla de negocio: un socio solo puede tener una reserva por día
+            // Si estamos editando, excluir la reserva actual de la validación
             int? reservaIdExcluir = SelectedReserva.Id == 0 ? (int?)null : SelectedReserva.Id;
             if (!_repository.ValidarReserva(SelectedReserva.SocioId, SelectedReserva.ActividadId, SelectedReserva.Fecha, reservaIdExcluir))
             {
@@ -165,6 +230,7 @@ namespace ViewModel
 
             try
             {
+                // Determinar si es inserción o actualización según el ID
                 if (SelectedReserva.Id == 0)
                 {
                     _repository.Add(SelectedReserva);
@@ -174,6 +240,7 @@ namespace ViewModel
                     _repository.Update(SelectedReserva);
                 }
                 
+                // Recargar y limpiar selección
                 CargarReservas();
                 SelectedReserva = null;
             }
@@ -183,14 +250,24 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Prepara la reserva seleccionada para edición
+        /// En este caso no realiza ninguna acción adicional ya que la edición es directa en el formulario
+        /// </summary>
         private void Editar()
         {
+            // La edición se realiza directamente en el formulario vinculado
         }
 
+        /// <summary>
+        /// Elimina la reserva seleccionada de la base de datos
+        /// Solicita confirmación antes de eliminar
+        /// </summary>
         private void Eliminar()
         {
             if (SelectedReserva == null) return;
 
+            // Solicitar confirmación al usuario
             var resultado = System.Windows.MessageBox.Show(
                 "¿Está seguro que desea eliminar esta reserva?", 
                 "Confirmar eliminación", 
@@ -205,6 +282,10 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Cancela la operación actual y recarga los datos originales
+        /// Descarta cualquier cambio no guardado
+        /// </summary>
         private void Cancelar()
         {
             SelectedReserva = null;

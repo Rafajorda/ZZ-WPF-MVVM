@@ -16,14 +16,19 @@ using System.Windows.Shapes;
 namespace Views
 {
     /// <summary>
-    /// Lógica de interacción para UCActividades.xaml
+    /// UserControl para la gestión de Actividades
+    /// Proporciona la interfaz de usuario para crear, editar, visualizar y eliminar actividades
+    /// El DataContext se establece automáticamente desde el MainViewModel cuando se navega a esta vista
     /// </summary>
     public partial class UCActividades : UserControl
     {
+        /// <summary>
+        /// Constructor del UserControl de Actividades
+        /// Inicializa todos los componentes visuales definidos en el XAML
+        /// </summary>
         public UCActividades()
         {
             InitializeComponent();
         }
-
     }
 }

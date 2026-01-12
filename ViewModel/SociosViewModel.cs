@@ -9,11 +9,21 @@ using Models;
 
 namespace ViewModel
 {
+    /// <summary>
+    /// ViewModel para la gestión de Socios
+    /// Maneja la lógica de negocio y la interacción entre la vista de socios y el repositorio
+    /// Implementa operaciones CRUD completas
+    /// </summary>
     public class SociosViewModel : BaseViewModel
     {
         private readonly SocioRepository _repository;
 
         private ObservableCollection<Socio> _socios;
+        
+        /// <summary>
+        /// Colección observable de todos los socios
+        /// Se actualiza automáticamente en la vista cuando cambia
+        /// </summary>
         public ObservableCollection<Socio> Socios
         {
             get => _socios;
@@ -25,6 +35,11 @@ namespace ViewModel
         }
 
         private Socio _selectedSocio;
+        
+        /// <summary>
+        /// Socio actualmente seleccionado en el DataGrid
+        /// Controla el estado del formulario y los comandos disponibles
+        /// </summary>
         public Socio SelectedSocio
         {
             get => _selectedSocio;
@@ -35,35 +50,52 @@ namespace ViewModel
                 OnPropertyChanged(nameof(IsEditingExistingSocio));
                 OnPropertyChanged(nameof(IsFormEnabled));
                 
-                // Forzar la reevaluación de CanExecute en todos los comandos
+                // Forzar reevaluación de los comandos
                 System.Windows.Input.CommandManager.InvalidateRequerySuggested();
             }
         }
 
+        /// <summary>
+        /// Indica si se está editando un socio existente (Id != 0)
+        /// </summary>
         public bool IsEditingExistingSocio => SelectedSocio != null && SelectedSocio.Id != 0;
         
+        /// <summary>
+        /// Indica si el formulario debe estar habilitado
+        /// </summary>
         public bool IsFormEnabled => SelectedSocio != null;
 
+        // Comandos para las operaciones CRUD
         public ICommand AgregarSocCommand { get; }
         public ICommand GuardarSocCommand { get; }
         public ICommand EditarSocCommand { get; }
         public ICommand EliminarSocCommand { get; }
         public ICommand CancelarSocCommand { get; }
 
+        /// <summary>
+        /// Constructor del SociosViewModel
+        /// Inicializa el repositorio, los comandos y carga los datos iniciales
+        /// </summary>
         public SociosViewModel()
         {
             _repository = new SocioRepository();
             Socios = new ObservableCollection<Socio>();
 
+            // Inicializar comandos con sus respectivas acciones y condiciones
             AgregarSocCommand = new RelayCommand(Agregar);
             GuardarSocCommand = new RelayCommand(Guardar, () => SelectedSocio != null);
             EditarSocCommand = new RelayCommand(Editar, () => SelectedSocio != null);
             EliminarSocCommand = new RelayCommand(Eliminar, () => SelectedSocio != null);
             CancelarSocCommand = new RelayCommand(Cancelar);
 
+            // Cargar datos iniciales
             CargarSocios();
         }
 
+        /// <summary>
+        /// Carga todos los socios desde la base de datos
+        /// Limpia y recarga la colección observable
+        /// </summary>
         private void CargarSocios()
         {
             Socios.Clear();
@@ -74,6 +106,10 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo socio vacío y lo prepara para edición
+        /// Por defecto, el nuevo socio está activo
+        /// </summary>
         private void Agregar()
         {
             var nuevoSocio = new Socio
@@ -86,17 +122,22 @@ namespace ViewModel
             SelectedSocio = nuevoSocio;
         }
 
+        /// <summary>
+        /// Guarda el socio actual (nuevo o modificado) en la base de datos
+        /// Realiza validaciones antes de guardar
+        /// </summary>
         private void Guardar()
         {
             if (SelectedSocio == null) return;
 
-            // Validación básica
+            // Validación: nombre obligatorio
             if (string.IsNullOrWhiteSpace(SelectedSocio.Nombre))
             {
                 System.Windows.MessageBox.Show("El nombre es obligatorio.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 return;
             }
 
+            // Validación: email obligatorio
             if (string.IsNullOrWhiteSpace(SelectedSocio.Email))
             {
                 System.Windows.MessageBox.Show("El email es obligatorio.", "Validación", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
@@ -105,17 +146,17 @@ namespace ViewModel
 
             try
             {
+                // Determinar si es inserción o actualización según el ID
                 if (SelectedSocio.Id == 0)
                 {
-                    // Nuevo socio
                     _repository.Add(SelectedSocio);
                 }
                 else
                 {
-                    // Socio existente
                     _repository.Update(SelectedSocio);
                 }
                 
+                // Recargar y limpiar selección
                 CargarSocios();
                 SelectedSocio = null;
             }
@@ -125,11 +166,18 @@ namespace ViewModel
             }
         }
 
+        /// <summary>
+        /// Prepara el socio seleccionado para edición
+        /// En este caso no realiza ninguna acción adicional ya que la edición es directa en el formulario
+        /// </summary>
         private void Editar()
         {
-           
+            // La edición se realiza directamente en el formulario vinculado
         }
 
+        /// <summary>
+        /// Elimina el socio seleccionado de la base de datos
+        /// </summary>
         private void Eliminar()
         {
             if (SelectedSocio == null) return;
@@ -139,6 +187,10 @@ namespace ViewModel
             SelectedSocio = null;
         }
 
+        /// <summary>
+        /// Cancela la operación actual y recarga los datos originales
+        /// Descarta cualquier cambio no guardado
+        /// </summary>
         private void Cancelar()
         {
             SelectedSocio = null;
